@@ -1,7 +1,7 @@
 {
   "name": "newsfeedboard",
   "version": "1.0.0",
-  "description": "newsfeedboard Backend in Node/Express/Sequielize", 
+  "description": "newsfeedboard Backend in Node/Express/Sequielize",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,6 +25,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "nodemon": "^2.0.7",
     "prettier": "^2.3.1"
   }
 }
