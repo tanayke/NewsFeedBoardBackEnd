@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const db = require('./models');
-const PORT = process.env.PORT || 5000;
-
+const { port } = require('./config/config');
+const PORT = port || 5000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -15,6 +15,6 @@ app.use('/api/cards', require('./routes/api/cards'));
 app.use('/api/articles', require('./routes/api/article'));
 db.sequelize.sync().then(() => {
   app.listen(PORT, () => {
-    console.log('listening on port 3000');
+    console.log(`listening on port ${PORT}`);
   });
 });
