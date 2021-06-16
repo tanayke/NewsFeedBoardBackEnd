@@ -1,32 +1,34 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class report extends Model {
+  class Report extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ User, Article }) {
       // define association here
-      report.belongsTo(models.user, {
-        foreignKey: "userId",
-        onDelete: "CASCADE",
-      });
-      report.belongsTo(models.article, {
-        foreignKey: "articleId",
-        onDelete: "CASCADE",
-      });
+      Report.belongsTo(User, { foreignKey: 'user_id' });
+      Report.belongsTo(Article, { foreignKey: 'article_id' });
     }
   }
-  report.init(
+  Report.init(
     {
-      reason: DataTypes.STRING(50),
+      reason: {
+        type: DataTypes.ENUM('SCAM', 'FAKE', 'HARRASMENT', 'ABUSIVE', 'OTHER'),
+        allowNull: false,
+      },
+      otherReason: {
+        type: DataTypes.STRING(250),
+        allowNull: true,
+      },
     },
     {
       sequelize,
-      modelName: "report",
+      modelName: 'Report',
+      tableName: 'reports',
     }
   );
-  return report;
+  return Report;
 };

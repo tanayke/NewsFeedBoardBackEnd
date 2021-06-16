@@ -1,42 +1,61 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class article extends Model {
+  class Article extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ Location, Category, User, Report, Card }) {
       // define association here
-      article.belongsTo(models.category, {
-        foreignKey: "categoryId",
-        onDelete: "CASCADE",
+      Article.hasMany(Report, {
+        foreignKey: {
+          name: 'article_id',
+          allowNull: false,
+        },
       });
-      article.belongsTo(models.user, {
-        foreignKey: "reporterId",
-        onDelete: "CASCADE",
+      Article.hasMany(Card, {
+        foreignKey: {
+          name: 'article_id',
+          allowNull: true,
+        },
       });
-      article.belongsTo(models.address, {
-        foreignKey: "addressId",
-        onDelete: "CASCADE",
-      });
+      Article.belongsTo(Category, { foreignKey: 'category_id' });
+      Article.belongsTo(User, { foreignKey: 'reporter_id' });
+      Article.belongsTo(Location, { foreignKey: 'location_id' });
     }
   }
-  article.init(
+  Article.init(
     {
-      title: DataTypes.STRING(120),
-      description: DataTypes.STRING(250),
-      thumbnailImage: DataTypes.STRING(250),
-      viewCount: DataTypes.BIGINT,
+      title: {
+        type: DataTypes.STRING(120),
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING(250),
+        allowNull: false,
+      },
+      thumbnailImage: {
+        type: DataTypes.STRING(250),
+        allowNull: false,
+      },
+      viewCount: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        defaultValue: 0,
+      },
       uploadDateTime: DataTypes.DATE,
-      isActive: DataTypes.INTEGER(1),
+      isActive: {
+        type: DataTypes.INTEGER(2),
+        defaultValue: 0,
+      },
     },
     {
       sequelize,
-      modelName: "article",
+      modelName: 'Article',
+      tableName: 'articles',
     }
   );
 
-  return article;
+  return Article;
 };
