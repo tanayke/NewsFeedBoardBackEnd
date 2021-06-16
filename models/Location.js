@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: {
           name: 'location_id',
           allowNull: false,
+          as: 'location',
         },
       });
       Location.hasOne(User, {

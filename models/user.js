@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'user_id',
         },
       });
-      User.belongsTo(Location, { foreignKey: 'location_id' });
+      User.belongsTo(Location, { foreignKey: 'location_id', as: 'location' });
     }
   }
   User.init(
