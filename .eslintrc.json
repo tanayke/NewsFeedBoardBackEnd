@@ -1,13 +1,18 @@
 {
-    
-    "extends": ["airbnb", "prettier", "plugin:node/recommended"],
-    "plugins": ["prettier"],
-    "rules": {
-       "prettier/prettier": "error",
-        "no-unused-vars":"warn",
-        "no-console":"off",
-        "func-names":"off",
-        "no-process-exit":"off"
-       
-    }
+  "extends": [
+    "airbnb",
+    "prettier",
+    "plugin:node/recommended",
+    "eslint:recommended"
+  ],
+  "plugins": ["prettier"],
+  "rules": {
+    "node/no-unpublished-require": "off",
+    "strict": "off",
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "func-names": "off",
+    "no-process-exit": "off"
+  }
 }

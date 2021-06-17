@@ -1,5 +1,5 @@
 const express = require('express');
-const { User, Location } = require('../../models');
+const { User } = require('../../models');
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 // @desc  create a user
 // @access Public
 router.post('/', async (req, res) => {
-  const { role, name, email, phone, password, isApproved, location_id } =
+  const { role, name, email, phone, password, isApproved, locationId } =
     req.body;
 
   try {
@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
       phone,
       password,
       isApproved,
-      location_id,
+      location_id: locationId,
     });
 
     return res.status(200).json(user);

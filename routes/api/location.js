@@ -1,12 +1,20 @@
 const express = require('express');
 const { Location } = require('../../models');
+
 const router = express.Router();
 
 // @route GET api/location
 // @desc  get all locations
 // @access Public
-router.get('/', (req, res) => res.send('Location Router'));
-
+router.get('/', async (req, res) => {
+  try {
+    const locations = await Location.findAll();
+    return res.json(locations);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json(err);
+  }
+});
 // @route POST api/location
 // @desc  create a location
 // @access Public
