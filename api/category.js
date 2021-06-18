@@ -1,12 +1,13 @@
 const express = require('express');
 const { Category } = require('../models');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
 // @route GET api/category
 // @desc  all categories for the home page filter
 // @access Public
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const categories = await Category.findAll();
     return res.json(categories);
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
 // @route POST api/category
 // @desc  add a new category while reporting a news article
 // @access Reporters only
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { name } = req.body;
 
   try {

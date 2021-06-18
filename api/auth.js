@@ -4,11 +4,11 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
-const { jwtSecret } = require('../../config/config');
+const { jwtSecret } = require('../config/config');
 
 const router = express.Router();
-const auth = require('../../middleware/auth');
-const { User } = require('../../models');
+const auth = require('../middleware/auth');
+const { User } = require('../models');
 
 // @route GET api/auth
 // @desc  auth route
