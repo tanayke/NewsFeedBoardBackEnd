@@ -3,7 +3,6 @@ const { Category } = require('../models');
 
 const auth = require('../middleware/auth');
 
-
 const router = express.Router();
 
 // @route GET api/category
