@@ -18,8 +18,10 @@ app.use('/api/locations', require('./api/location'));
 app.use('/api/categories', require('./api/category'));
 app.use('/api/cards', require('./api/cards'));
 app.use('/api/articles', require('./api/article'));
+app.use('/api/auth', require('./api/auth'));
 
-db.sequelize.sync().then(() => {
+
+db.sequelize.sync({ alter: true }).then(() => {
   app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
   });
