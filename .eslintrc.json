@@ -13,6 +13,13 @@
     "no-unused-vars": "warn",
     "no-console": "off",
     "func-names": "off",
-    "no-process-exit": "off"
+    "no-process-exit": "off",
+    "node/no-unsupported-features/es-syntax": [
+      "warn",
+      {
+        "version": ">=8.0.0",
+        "ignores": []
+      }
+    ]
   }
 }

@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(Location, { foreignKey: 'location_id', as: 'location' });
     }
+
+    toJSON() {
+      return { ...this.get(), password: undefined };
+    }
   }
   User.init(
     {

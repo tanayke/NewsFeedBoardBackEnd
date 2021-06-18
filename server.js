@@ -13,6 +13,7 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 
 // define routes
 app.use('/api/users', require('./routes/api/user'));
+app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/reports', require('./routes/api/report'));
 app.use('/api/locations', require('./routes/api/location'));
 app.use('/api/categories', require('./routes/api/category'));
