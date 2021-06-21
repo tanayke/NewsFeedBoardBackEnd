@@ -1,0 +1,33 @@
+XML Notes:
+--eXtensibel Markup Language
+1.Tranasfer Data from server to client
+2.TO configure the server or framework
+3.To design the Android Apps
+4.To configure the JPA,Spring and hibernate in java web apps
+
+Rules For XML:
+1.file should have opening and closing tag
+2.case sensative language 
+3.file must contains root tag with opening and closing.
+
+DTD Grammer or Validation
+ -Structural validation(for validating structure of file) 
+ -Content validation(for validating contents of file)
+
+XML parser:
+--- <?xml version="1.0" encooding="UTF-8?>
+for content formatting
+                1.Structure--> DTD(document Type Definition)
+                2.Content--->schema
+<!ELEMENT aliens (alien)>
+<!ELEMENT aliens (name,salary)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT salary (#PCDATA)>
+<!ELEMENT alien aid ID #REQUIRED>
+
+
+
+
+
+
+

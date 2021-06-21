@@ -84,11 +84,10 @@ router.post(
         return res.json({ token });
       });
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
       return res.status(500).json(err);
     }
   }
 );
-
 
 module.exports = router;
