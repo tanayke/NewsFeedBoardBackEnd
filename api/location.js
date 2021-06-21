@@ -7,18 +7,38 @@ const router = express.Router();
 // @desc  get all locations
 // @access Public
 router.get('/', async (req, res) => {
+  const { state } = req.query;
   try {
-    const locations = await Location.findAll();
+    // eslint-disable-next-line prettier/prettier
+    const locations =  state
+      ? await Location.findAll({
+          where: { state },
+        })
+      : await Location.findAll();
+    console.log(locations);
     return res.json(locations);
   } catch (err) {
     console.log(err);
     return res.status(400).json(err);
   }
 });
+
+// router.get('/cities/:state', async (req, res) => {
+//   try {
+//     const locations = await Location.findAll({
+//       where: { state: req.params.state },
+//     });
+//     return res.json(locations);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(400).json(err);
+//   }
+// });
 // @route POST api/location
 // @desc  create a location
 // @access Public
 router.post('/', async (req, res) => {
+  console.log(req.body);
   const { locality, city, state } = req.body;
 
   try {
