@@ -23,9 +23,15 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: true,
         },
       });
-      Article.belongsTo(Category, { foreignKey: 'category_id' });
-      Article.belongsTo(User, { foreignKey: 'reporter_id' });
-      Article.belongsTo(Location, { foreignKey: 'location_id' });
+      Article.belongsTo(Category, {
+        foreignKey: 'category_id',
+        as: 'category',
+      });
+      Article.belongsTo(User, { foreignKey: 'reporter_id', as: 'user' });
+      Article.belongsTo(Location, {
+        foreignKey: 'location_id',
+        as: 'location',
+      });
     }
   }
   Article.init(
