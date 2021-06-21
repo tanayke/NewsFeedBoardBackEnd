@@ -12,8 +12,7 @@ const { User } = require('../models');
 
 // @route GET api/auth
 // @desc  auth route
-// @access Public
-
+// @access Publics
 router.get('/', auth, async (req, res) => {
   try {
     console.log(`user id ${req.user.id}`);

@@ -10,12 +10,12 @@ router.get('/', async (req, res) => {
   const { state } = req.query;
   try {
     // eslint-disable-next-line prettier/prettier
-    const locations =  state
+    const locations = state
       ? await Location.findAll({
           where: { state },
         })
       : await Location.findAll();
-    console.log(locations);
+
     return res.json(locations);
   } catch (err) {
     console.log(err);

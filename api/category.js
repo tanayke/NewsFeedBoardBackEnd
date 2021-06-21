@@ -9,7 +9,7 @@ const router = express.Router();
 // @desc  all categories for the home page filter
 // @access Public
 
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const categories = await Category.findAll();
     return res.json(categories);
@@ -22,7 +22,7 @@ router.get('/', auth, async (req, res) => {
 // @desc  add a new category while reporting a news article
 // @access Reporters only
 
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
   const { name } = req.body;
 
   try {
