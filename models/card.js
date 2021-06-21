@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(500),
         allowNull: false,
       },
+      cardsOrder: {
+        type: DataTypes.INTEGER(),
+        allowNull: false,
+      },
     },
     {
       sequelize,
