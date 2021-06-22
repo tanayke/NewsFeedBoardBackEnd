@@ -33,6 +33,15 @@ module.exports = (sequelize, DataTypes) => {
         as: 'location',
       });
     }
+
+    toJSON() {
+      return {
+        ...this.get(),
+        location_id: undefined,
+        reporter_id: undefined,
+        category_id: undefined,
+      };
+    }
   }
   Article.init(
     {
