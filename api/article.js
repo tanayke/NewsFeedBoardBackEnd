@@ -66,8 +66,11 @@ router.get('/', async (req, res) => {
                 },
               ],
             },
+            include: ['location', 'reporter', 'category'],
           })
-        : await Article.findAll();
+        : await Article.findAll({
+            include: ['location', 'reporter', 'category'],
+          });
     return res.json(articles);
   } catch (err) {
     return res.status(400).json(err);
