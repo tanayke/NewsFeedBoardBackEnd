@@ -1,15 +1,10 @@
-/* eslint-disable prefer-template */
-/* eslint-disable consistent-return */
 const express = require('express');
-
+const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
 const { Article } = require('../models');
 
 const router = express.Router();
-// @route GET api/articles
-// @desc  test route
-// @access Public
 
 const Storage = multer.diskStorage({
   destination: './public/thumbnail',
@@ -18,7 +13,7 @@ const Storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
       null,
-      file.fieldname + '_' + Date.now() + path.extname(file.originalname)
+      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
     );
   },
 });
@@ -27,8 +22,6 @@ const upload = multer({
   storage: Storage,
 }).single('thumbnailImage');
 
-router.get('/', (req, res) => res.send('arcticle Router'));
-
 router.post('/', upload, async (req, res) => {
   const { title, description, categoryId, reporterId, locationId } = req.body;
   console.log(locationId);
@@ -36,7 +29,7 @@ router.post('/', upload, async (req, res) => {
     const article = await Article.create({
       title,
       description,
-      thumbnailImage: '/thumbnail/' + req.file.filename,
+      thumbnailImage: `/thumbnail/${req.file.filename}`,
       viewCount: 0,
       uploadDateTime: new Date(),
       isActive: 0,
@@ -48,6 +41,36 @@ router.post('/', upload, async (req, res) => {
   } catch (err) {
     // console.log(err);
     return res.status(400).json(err.message);
+  }
+});
+
+// @route GET api/articles
+// @desc  test route
+// @access Public
+router.get('/', async (req, res) => {
+  const { locationId, search } = req.query;
+
+  try {
+    const articles =
+      locationId && search
+        ? await Article.findAll({
+            where: {
+              [Op.and]: [
+                {
+                  location_id: locationId,
+                },
+                {
+                  title: {
+                    [Op.substring]: search,
+                  },
+                },
+              ],
+            },
+          })
+        : await Article.findAll();
+    return res.json(articles);
+  } catch (err) {
+    return res.status(400).json(err);
   }
 });
 

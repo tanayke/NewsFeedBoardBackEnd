@@ -25,7 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       });
       Article.belongsTo(Category, { foreignKey: 'category_id' });
       Article.belongsTo(User, { foreignKey: 'reporter_id' });
-      Article.belongsTo(Location, { foreignKey: 'location_id' });
+      Article.belongsTo(Location, {
+        foreignKey: 'location_id',
+      });
     }
   }
   Article.init(
