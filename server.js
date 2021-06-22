@@ -20,7 +20,7 @@ app.use('/api/cards', require('./api/cards'));
 app.use('/api/articles', require('./api/article'));
 app.use('/api/auth', require('./api/auth'));
 
-db.sequelize.sync({ alter: false }).then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
   app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
   });
