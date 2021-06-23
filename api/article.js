@@ -43,7 +43,8 @@ router.post('/', upload, async (req, res) => {
     location_id: locationId,
   });
   await article.save();
-  return res.json({ message: 'article added successfully' });
+  return res.status(201).json(article);
+  // return res.json({ message: 'article added successfully' });
 });
 
 module.exports = router;
