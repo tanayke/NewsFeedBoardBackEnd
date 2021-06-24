@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const express = require('express');
 const { Op } = require('sequelize');
 const multer = require('multer');
@@ -45,14 +46,14 @@ router.post('/', upload, async (req, res) => {
 });
 
 // @route GET api/articles
-// @desc  test route
+// @desc  gets ALL articles based on filter applied(category,location,search via title) and ALL if no filter is applied
 // @access Public
 router.get('/', async (req, res) => {
-  const { locationId, search } = req.query;
+  const { locationId, categoryId } = req.query;
 
   try {
     const articles =
-      locationId && search
+      locationId && categoryId
         ? await Article.findAll({
             where: {
               [Op.and]: [
@@ -60,21 +61,64 @@ router.get('/', async (req, res) => {
                   location_id: locationId,
                 },
                 {
-                  title: {
-                    [Op.substring]: search,
-                  },
+                  category_id: categoryId,
                 },
               ],
+            },
+            include: ['location', 'reporter', 'category'],
+          })
+        : locationId
+        ? await Article.findAll({
+            where: {
+              location_id: locationId,
+            },
+            include: ['location', 'reporter', 'category'],
+          })
+        : categoryId
+        ? await Article.findAll({
+            where: {
+              category_id: categoryId,
             },
             include: ['location', 'reporter', 'category'],
           })
         : await Article.findAll({
             include: ['location', 'reporter', 'category'],
           });
+
     return res.json(articles);
   } catch (err) {
     return res.status(400).json(err);
   }
 });
 
+// @route GET api/articles
+// @desc  gets ALL articles based on SEARCH string (titiel & description)and NONE if no SEARCH string is applied
+// @access Public
+router.get('/search', async (req, res) => {
+  const { search } = req.query;
+  if (!search)
+    return res.status(400).json({ mesg: 'please dont enter empty string' });
+  try {
+    const articles = await Article.findAll({
+      where: {
+        [Op.or]: [
+          {
+            title: {
+              [Op.substring]: search,
+            },
+          },
+          {
+            description: {
+              [Op.substring]: search,
+            },
+          },
+        ],
+      },
+      include: ['location', 'reporter', 'category'],
+    });
+    return res.json(articles);
+  } catch (err) {
+    return res.status(400).json(err);
+  }
+});
 module.exports = router;
