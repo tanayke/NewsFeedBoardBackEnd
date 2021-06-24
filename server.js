@@ -6,7 +6,7 @@ const db = require('./models');
 const { port } = require('./config/config');
 
 const PORT = port || 5000;
-
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }));

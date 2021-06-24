@@ -48,7 +48,7 @@ router.post('/', upload, async (req, res) => {
     locationId,
   } = req.body;
   const thumbnailImage = `/uploads/${req.file.filename}`;
-  article = new Article({
+  const article = new Article({
     title,
     description,
     thumbnailImage,
