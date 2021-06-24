@@ -25,30 +25,30 @@ const Storage = multer.diskStorage({
 
 const upload = multer({
   storage: Storage,
-}).single('thumbnailImage');
+}).any();
 
 router.get('/', (req, res) => res.send('arcticle Router'));
 
 router.post('/', upload, async (req, res) => {
-  const { title, description, categoryId, reporterId, locationId } = req.body;
-  console.log(locationId);
-  try {
-    const article = await Article.create({
-      title,
-      description,
-      thumbnailImage: '/thumbnail/' + req.file.filename,
-      viewCount: 0,
-      uploadDateTime: new Date(),
-      isActive: 0,
-      category_id: categoryId,
-      reporter_id: reporterId,
-      location_id: locationId,
-    });
-    return res.status(201).json(article);
-  } catch (err) {
-    // console.log(err);
-    return res.status(400).json(err.message);
-  }
+  // const { title, description, categoryId, reporterId, locationId ,cards } = req.body;
+  console.log(req.body);
+  //   try {
+  //     const article = await Article.create({
+  //       title,
+  //       description,
+  //       thumbnailImage: '/thumbnail/' + req.file.filename,
+  //       viewCount: 0,
+  //       uploadDateTime: new Date(),
+  //       isActive: 0,
+  //       category_id: categoryId,
+  //       reporter_id: reporterId,
+  //       location_id: locationId,
+  //     });
+  //     return res.status(201).json(article);
+  //   } catch (err) {
+  //     // console.log(err);
+  //     return res.status(400).json(err.message);
+  //   }
 });
 
 module.exports = router;
