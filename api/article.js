@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable no-nested-ternary */
 const express = require('express');
 const { Op } = require('sequelize');
@@ -9,74 +10,71 @@ const { Location } = require('../models');
 const router = express.Router();
 
 const Storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(
-      null,
-      file.fieldname === 'thumbnailImage'
-        ? './public/thumbnail'
-        : './public/cards'
-    );
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-
-const upload = multer({
-  storage: Storage,
-}).any();
-
-router.post('/', upload, async (req, res) => {
-  console.log(req.body);
-  console.log(req.files);
-  console.log(req.files.length);
-
-  req.files.forEach((file, i) => {
-    console.log(`req.body.card.${i}.type`);
-    // console.log(req.body.card.+i+.content);
+    destination: (req, file, cb) => {
+      cb(
+        null,
+        file.fieldname === 'thumbnailImage'
+          ? './public/thumbnail'
+          : './public/cards'
+      );
+    },
+    filename: (req, file, cb) => {
+      cb(
+        null,
+        file.fieldname + '_' + Date.now() + path.extname(file.originalname)
+      );
+    },
   });
-
-  const {
-    title,
-    description,
-    state,
-    city,
-    locality,
-    categoryId,
-    reporterId,
-    isNewlocation,
-  } = req.body;
-
-  try {
-    const location =
-      isNewlocation === 'true'
-        ? await Location.create({
-            locality,
-            city,
-            state,
-          })
-        : undefined;
-
-    const article = await Article.create({
-      title,
-      description,
-      thumbnailImage: `/thumbnail/${req.files[0].filename}`,
-      viewCount: 0,
-      uploadDateTime: new Date(),
-      isActive: 0,
-      category_id: categoryId,
-      reporter_id: reporterId,
-      location_id: isNewlocation === 'true' ? location.id : locality,
-    });
-    return res.status(201).json(article);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json(err);
-  }
-});
+  
+  const upload = multer({
+    storage: Storage,
+  }).any();
+  
+  router.get('/', (req, res) => res.send('arcticle Router'));
+  
+  router.post('/', upload, async (req, res) => {
+    console.log(req.body);
+    console.log(JSON.stringify(Array.from(req.body.cardsData)));
+  
+    //   const {title,description} =req.body.cards;
+    //   const {
+    //     title,
+    //     description,
+    //     state,
+    //     city,
+    //     locality,
+    //     categoryId,
+    //     reporterId,
+    //     isNewlocation,
+    //   } = req.body;
+  
+    //   try {
+    //     const location =
+    //       isNewlocation === 'true'
+    //         ? await Location.create({
+    //             locality,
+    //             city,
+    //             state,
+    //           })
+    //         : undefined;
+  
+    //     const article = await Article.create({
+    //       title,
+    //       description,
+    //       thumbnailImage: '/thumbnail/' + req.files[0].filename,
+    //       viewCount: 0,
+    //       uploadDateTime: new Date(),
+    //       isActive: 0,
+    //       category_id: categoryId,
+    //       reporter_id: reporterId,
+    //       location_id: isNewlocation === 'true' ? location.id : locality,
+    //     });
+    //     return res.status(201).json(article);
+    //   } catch (err) {
+    //     console.log(err);
+    //     return res.status(400).json(err);
+    //   }
+  });
 
 router.get('/:articleId', async (req, res) => {
   try {
@@ -206,3 +204,6 @@ const fetchArticlesByCategory = (categoryId, isTrending) =>
   });
 
 module.exports = router;
+=======
+
+>>>>>>> working on cards
