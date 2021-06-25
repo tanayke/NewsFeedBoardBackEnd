@@ -82,7 +82,7 @@ router.get('/:articleId', async (req, res) => {
   try {
     const { articleId } = req.params;
     const articles = await Article.findOne({
-      where: { articleId },
+      where: { id: articleId },
       include: ['location', 'reporter', 'category'],
     });
     console.log(req.params.id);
