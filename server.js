@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.static('public'));
+
 // define routes
 app.use('/api/users', require('./api/user'));
 app.use('/api/reports', require('./api/report'));
