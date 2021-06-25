@@ -78,6 +78,21 @@ router.post('/', upload, async (req, res) => {
   }
 });
 
+router.get('/:articleId', async (req, res) => {
+  try {
+    const { articleId } = req.params;
+    const articles = await Article.findOne({
+      where: { articleId },
+      include: ['location', 'reporter', 'category'],
+    });
+    console.log(req.params.id);
+    return res.json(articles);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json(err);
+  }
+});
+
 // @route GET api/articles
 // @desc  gets ALL articles based on filter applied(category,location,search,trending via title) and ALL if no filter is applied
 // @access Public
