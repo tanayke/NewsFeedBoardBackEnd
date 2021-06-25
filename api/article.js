@@ -46,79 +46,115 @@ router.post('/', upload, async (req, res) => {
 });
 
 // @route GET api/articles
-// @desc  gets ALL articles based on filter applied(category,location,search via title) and ALL if no filter is applied
+// @desc  gets ALL articles based on filter applied(category,location,search,trending via title) and ALL if no filter is applied
 // @access Public
 router.get('/', async (req, res) => {
-  const { locationId, categoryId } = req.query;
-
+  const { locationId, categoryId, search, isTrending } = req.query;
+  let articles;
   try {
-    const articles =
-      locationId && categoryId
-        ? await Article.findAll({
-            where: {
-              [Op.and]: [
-                {
-                  location_id: locationId,
-                },
-                {
-                  category_id: categoryId,
-                },
-              ],
-            },
-            include: ['location', 'reporter', 'category'],
-          })
-        : locationId
-        ? await Article.findAll({
-            where: {
-              location_id: locationId,
-            },
-            include: ['location', 'reporter', 'category'],
-          })
-        : categoryId
-        ? await Article.findAll({
-            where: {
-              category_id: categoryId,
-            },
-            include: ['location', 'reporter', 'category'],
-          })
-        : await Article.findAll({
-            include: ['location', 'reporter', 'category'],
-          });
-
+    if (search) articles = await fetchArticlesBySearch(search, isTrending);
+    else if (locationId && categoryId)
+      articles = await fetchArticlesByLocationAndCategory(
+        locationId,
+        categoryId,
+        isTrending
+      );
+    else if (locationId)
+      articles = await fetchArticlesByLocation(locationId, isTrending);
+    else if (categoryId)
+      articles = await fetchArticlesByCategory(categoryId, isTrending);
+    else articles = await fetchAllArticles(isTrending);
     return res.json(articles);
   } catch (err) {
     return res.status(400).json(err);
   }
 });
 
-// @route GET api/articles
-// @desc  gets ALL articles based on SEARCH string (titiel & description)and NONE if no SEARCH string is applied
-// @access Public
-router.get('/search', async (req, res) => {
-  const { search } = req.query;
-  if (!search)
-    return res.status(400).json({ mesg: 'please dont enter empty string' });
-  try {
-    const articles = await Article.findAll({
-      where: {
-        [Op.or]: [
-          {
-            title: {
-              [Op.substring]: search,
-            },
+// utitliy methods
+const fetchAllArticles = (isTrending) =>
+  Article.findAll({
+    order: isTrending
+      ? [
+          ['viewCount', 'DESC'],
+          ['uploadDateTime', 'DESC'],
+        ]
+      : [['uploadDateTime', 'DESC']],
+    include: ['location', 'reporter', 'category'],
+  });
+
+const fetchArticlesBySearch = (search, isTrending) =>
+  Article.findAll({
+    where: {
+      [Op.or]: [
+        {
+          title: {
+            [Op.substring]: search,
           },
-          {
-            description: {
-              [Op.substring]: search,
-            },
+        },
+        {
+          description: {
+            [Op.substring]: search,
           },
-        ],
-      },
-      include: ['location', 'reporter', 'category'],
-    });
-    return res.json(articles);
-  } catch (err) {
-    return res.status(400).json(err);
-  }
-});
+        },
+      ],
+    },
+    order: isTrending
+      ? [
+          ['viewCount', 'DESC'],
+          ['uploadDateTime', 'DESC'],
+        ]
+      : [['uploadDateTime', 'DESC']],
+    include: ['location', 'reporter', 'category'],
+  });
+const fetchArticlesByLocationAndCategory = (
+  locationId,
+  categoryId,
+  isTrending
+) =>
+  Article.findAll({
+    where: {
+      [Op.and]: [
+        {
+          location_id: locationId,
+        },
+        {
+          category_id: categoryId,
+        },
+      ],
+    },
+    order: isTrending
+      ? [
+          ['viewCount', 'DESC'],
+          ['uploadDateTime', 'DESC'],
+        ]
+      : [['uploadDateTime', 'DESC']],
+    include: ['location', 'reporter', 'category'],
+  });
+const fetchArticlesByLocation = (locationId, isTrending) =>
+  Article.findAll({
+    where: {
+      location_id: locationId,
+    },
+    order: isTrending
+      ? [
+          ['viewCount', 'DESC'],
+          ['uploadDateTime', 'DESC'],
+        ]
+      : [['uploadDateTime', 'DESC']],
+    include: ['location', 'reporter', 'category'],
+  });
+const fetchArticlesByCategory = (categoryId, isTrending) =>
+  Article.findAll({
+    where: {
+      category_id: categoryId,
+    },
+    order: isTrending
+      ? [
+          ['viewCount', 'DESC'],
+          ['uploadDateTime', 'DESC'],
+        ]
+      : [['uploadDateTime', 'DESC']],
+    include: ['location', 'reporter', 'category'],
+  });
+
 module.exports = router;
