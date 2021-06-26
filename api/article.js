@@ -23,23 +23,6 @@ const createCards = (cards, articleId, files) => {
   });
 
   return cardsArrayUpdated;
-
-  // console.log(cardsArrayUpdated);
-
-  // let array = '[';
-  // cardsArrayUpdated.forEach((card) => {
-  //   array += `{type:"${card.type}",content:"${card.content}",cardsOrder:"${card.cardsOrder}",article_id:"${articleId}"},`;
-  // });
-
-  // let str = array.substr(0, array.length - 1);
-  // str += ']';
-
-  // console.log(str);
-
-  // Card.bulkCreate(cardsArrayUpdated, { returning: true }) // will return all columns for each row inserted
-  //   .then((result) => {
-  //     console.log(result);
-  //   });
 };
 
 const Storage = multer.diskStorage({
@@ -62,8 +45,6 @@ const Storage = multer.diskStorage({
 const upload = multer({
   storage: Storage,
 }).any();
-
-router.get('/', (req, res) => res.send('arcticle Router'));
 
 router.post('/', upload, async (req, res) => {
   const {
