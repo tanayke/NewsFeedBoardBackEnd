@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/config');
 
-const { User } = require('../models');
+const { User, Location } = require('../models');
 
 const router = express.Router();
 
@@ -41,8 +41,21 @@ router.post(
   ],
   // eslint-disable-next-line consistent-return
   async (req, res) => {
-    const { role, name, email, phone, password, isApproved, locationId } =
-      req.body;
+    const {
+      role,
+      name,
+      email,
+      phone,
+      password,
+      isApproved,
+      state,
+      city,
+      locality,
+      isNewLocation,
+    } = req.body;
+
+    console.log('locality', locality);
+    console.log(req.body);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -57,6 +70,11 @@ router.post(
           .json({ errors: [{ msg: 'User already exists!' }] });
       }
 
+      const location =
+        isNewLocation === 'true'
+          ? await Location.create({ state, city, locality })
+          : undefined;
+
       user = new User({
         role,
         name,
@@ -64,7 +82,7 @@ router.post(
         phone,
         password,
         isApproved,
-        location_id: locationId,
+        location_id: isNewLocation === 'true' ? location.id : locality,
       });
 
       const salt = await bcrypt.genSalt(10);
