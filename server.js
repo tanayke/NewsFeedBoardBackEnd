@@ -6,7 +6,7 @@ const db = require('./models');
 const { port } = require('./config/config');
 
 const PORT = port || 5000;
-
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }));
@@ -21,7 +21,7 @@ app.use('/api/cards', require('./api/cards'));
 app.use('/api/articles', require('./api/article'));
 app.use('/api/auth', require('./api/auth'));
 
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync({ alter: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
   });
