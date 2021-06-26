@@ -72,17 +72,17 @@ router.post(
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
+      return res.status(200).json(user);
+      //   const payload = {
+      //     user: {
+      //       id: user.id,
+      //     },
+      //   };
 
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      };
-
-      jwt.sign(payload, jwtSecret, { expiresIn: 3600 }, (err, token) => {
-        if (err) throw err;
-        return res.json({ token });
-      });
+      //   jwt.sign(payload, jwtSecret, { expiresIn: 3600 }, (err, token) => {
+      //     if (err) throw err;
+      //     return res.json({ token });
+      //   });
     } catch (err) {
       console.error(err.message);
       return res.status(500).json(err);
