@@ -18,7 +18,14 @@ module.exports = (sequelize, DataTypes) => {
   Report.init(
     {
       reason: {
-        type: DataTypes.ENUM('SCAM', 'FAKE', 'HARRASMENT', 'ABUSIVE', 'OTHER'),
+        type: DataTypes.ENUM(
+          'SPAM',
+          'FAKE NEWS',
+          'HARRASMENT',
+          'PROMOTES TERRORISM',
+          'DEFAMATION',
+          'OTHER'
+        ),
         allowNull: false,
       },
       otherReason: {

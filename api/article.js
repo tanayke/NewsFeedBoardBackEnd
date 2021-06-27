@@ -46,8 +46,6 @@ const upload = multer({
   storage: Storage,
 }).any();
 
-router.get('/', (req, res) => res.send('arcticle Router'));
-
 router.post('/', upload, async (req, res) => {
   const {
     title,
