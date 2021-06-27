@@ -3,7 +3,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { jwtSecret } = require('../config/config');
+const { jwtSecret, adminEmail } = require('../config/config');
 const mailer = require('../mailer');
 
 const { User, Location } = require('../models');
@@ -90,17 +90,21 @@ router.post(
 
       user.password = await bcrypt.hash(password, salt);
 
+      const adminUser = await User.findOne({ where: { role: 'ADMIN' } });
+
       await user.save();
 
       const body1 = `
-      <h2>Hello From News Articles APP</h2>
+      <h2 style="color: blue;">Greetings From News Articles APP</h2>
+      <p>Hello <strong>${adminUser.name}</strong>, new Reporter has been registered with the system. Please go to following link to Approve Or Deny his Request. Thank You. </p>
+      <a href="http://localhost:3000/admin">Click Here</a>
+
       `;
 
       if (user.role === 'REPORTER') {
         try {
-          mailer.transporter();
           mailer.sendEmail(
-            user.email,
+            adminEmail,
             'New Request For Registration of Reporter',
             body1,
             (error, info) => {
