@@ -60,6 +60,7 @@ router.post('/', upload, async (req, res) => {
   } = req.body;
 
   try {
+    console.log(req.body);
     const location =
       isNewlocation === 'true'
         ? await Location.create({
@@ -92,6 +93,9 @@ router.post('/', upload, async (req, res) => {
   }
 });
 
+// @route GET api/articles
+// @desc  GET Article Detials based on articleId
+// @access Public
 router.get('/:articleId', async (req, res) => {
   try {
     const { articleId } = req.params;
@@ -104,6 +108,20 @@ router.get('/:articleId', async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(400).json(err);
+  }
+});
+
+// @route GET api/articles
+// @desc increase viewcount of article by 1
+// @access Public
+router.patch('/viewCount/:articleId', async (req, res) => {
+  try {
+    const { articleId } = req.params;
+    const article = await Article.findByPk(articleId);
+    const updatedViewCount = article.increment('viewCount');
+    return res.status(200).json(updatedViewCount);
+  } catch (err) {
+    return res.status(304).send(err);
   }
 });
 
