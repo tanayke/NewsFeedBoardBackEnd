@@ -5,33 +5,25 @@ const SMTPTransport = require('nodemailer/lib/smtp-transport');
 const { email } = require('./config/config');
 
 // eslint-disable-next-line no-shadow
-const sendEmail = (toEmailId, subject, body, callback) => {
-  const transport = nodeMailer.createTransport(
-    new SMTPTransport({
-      service: 'SendPulse',
-      auth: {
-        user: email.id,
-        pass: email.password,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-      connectionTimeout: 5000000,
-      greetingTimeout: 5000000,
-      socketTimeout: 5000000,
-    })
-  );
+const sendEmail = (emailId, subject, body, callback) => {
+  const transport = nodeMailer.createTransport({
+    host: 'smtp.mailtrap.io',
+    port: 2525,
+    auth: {
+      user: '2faab10a6cddb8',
+      pass: 'a6daf6170b7476',
+    },
+  });
 
   const options = {
-    from: email.id,
-    to: toEmailId,
+    from: 'siddharthmane-4eb91e@inbox.mailtrap.io',
+    to: emailId,
     // eslint-disable-next-line object-shorthand
     subject: subject,
     html: body,
   };
 
   console.log(options);
-  console.log('emailUser and pass from env', email.id, email.password);
 
   transport.sendMail(options, callback);
 };

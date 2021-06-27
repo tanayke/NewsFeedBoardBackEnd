@@ -74,9 +74,7 @@ router.post('/', upload, async (req, res) => {
       title,
       description,
       thumbnailImage: `/thumbnail/${req.files[0].filename}`,
-      viewCount: 0,
       uploadDateTime: new Date(),
-      isActive: 0,
       category_id: categoryId,
       reporter_id: reporterId,
       location_id: isNewlocation === 'true' ? location.id : locality,
@@ -89,6 +87,21 @@ router.post('/', upload, async (req, res) => {
     return res.status(201).json(article);
   } catch (err) {
     console.log(err);
+    return res.status(400).json(err);
+  }
+});
+
+// @route GET api/articles
+// @desc gets all articles in descending order of view counts
+// @access Public
+router.get('/viewCount', async (req, res) => {
+  try {
+    const articles = await Article.findAll({
+      include: ['location', 'reporter', 'category'],
+      order: [['viewCount', 'DESC']],
+    });
+    return res.status(200).json(articles);
+  } catch (err) {
     return res.status(400).json(err);
   }
 });

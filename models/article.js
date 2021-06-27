@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       uploadDateTime: DataTypes.DATE,
       isActive: {
         type: DataTypes.INTEGER(2),
-        defaultValue: 0,
+        defaultValue: 1,
       },
     },
     {
