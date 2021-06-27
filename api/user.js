@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/config');
+const mailer = require('../mailer');
 
 const { User, Location } = require('../models');
 
@@ -90,17 +91,29 @@ router.post(
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
-      return res.status(200).json(user);
-      //   const payload = {
-      //     user: {
-      //       id: user.id,
-      //     },
-      //   };
 
-      //   jwt.sign(payload, jwtSecret, { expiresIn: 3600 }, (err, token) => {
-      //     if (err) throw err;
-      //     return res.json({ token });
-      //   });
+      const body1 = `
+      <h2>Hello From News Articles APP</h2>
+      `;
+
+      if (user.role === 'REPORTER') {
+        try {
+          mailer.transporter();
+          mailer.sendEmail(
+            user.email,
+            'New Request For Registration of Reporter',
+            body1,
+            (error, info) => {
+              console.log(error);
+              console.log(info);
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      return res.status(200).json(user);
     } catch (err) {
       console.error(err.message);
       return res.status(500).json(err);
