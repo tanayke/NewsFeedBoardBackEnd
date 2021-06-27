@@ -15,8 +15,30 @@ const router = express.Router();
 // @access Public
 router.get('/', async (req, res) => {
   try {
-    const users = await User.findAll({ include: 'location' });
-    return res.json(users);
+    const { isApproved, role } = req.query;
+    const users = await User.findAll({
+      where: { isApproved, role },
+      include: ['location'],
+    });
+    return res.status(200).json(users);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json(err);
+  }
+});
+
+// @route PATCH api/user
+// @desc  update isApproved
+// @access Public
+router.patch('/', async (req, res) => {
+  try {
+    const { isApproved, userId } = req.body;
+    console.log(isApproved, userId);
+    const user = await User.findByPk(userId);
+    user.isApproved = isApproved;
+    await user.save({ fields: ['isApproved'] });
+    user.reload();
+    return res.status(200).json(user);
   } catch (err) {
     console.log(err);
     return res.status(400).json(err);

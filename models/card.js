@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       content: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.STRING(1500),
         allowNull: false,
       },
       cardsOrder: {
