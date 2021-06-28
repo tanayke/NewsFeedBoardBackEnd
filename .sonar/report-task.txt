@@ -1,0 +1,5 @@
+projectKey=FRTP_MajorProjectBackEnd_React_G9
+serverUrl=http://172.27.12.78
+dashboardUrl=http://172.27.12.78/dashboard/index/FRTP_MajorProjectBackEnd_React_G9
+ceTaskId=AXpRDi-ka_m12xx6Rv9f
+ceTaskUrl=http://172.27.12.78/api/ce/task?id=AXpRDi-ka_m12xx6Rv9f
