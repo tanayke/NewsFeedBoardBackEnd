@@ -1,7 +1,37 @@
 const express = require('express');
-const { Report } = require('../models');
+const { Op } = require('sequelize');
+const { Report, Article, User } = require('../models');
 
 const router = express.Router();
+
+// TODO
+// @route GET api/report
+// @desc  Get all reports by article.isActive == 0
+// @access Public
+
+router.get('/unresolved', async (req, res) => {
+  try {
+    const reports = await Report.findAll({
+      include: [
+        {
+          model: Article,
+          as: 'article',
+          where: {
+            isActive: {
+              [Op.eq]: '0',
+            },
+          },
+        },
+        'user',
+      ],
+    });
+    return reports.length
+      ? res.status(200).send(reports)
+      : res.status(204).send('no reports foudn');
+  } catch (err) {
+    return res.status(204).send(err.message);
+  }
+});
 
 // @route GET api/report
 // @desc  Get a report by userID and articleId to make sure user doesnt report again

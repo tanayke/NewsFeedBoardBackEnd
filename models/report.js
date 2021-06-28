@@ -11,8 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ User, Article }) {
       // define association here
-      Report.belongsTo(User, { foreignKey: 'user_id' });
-      Report.belongsTo(Article, { foreignKey: 'article_id' });
+      Report.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+      Report.belongsTo(Article, { foreignKey: 'article_id', as: 'article' });
+    }
+
+    toJSON() {
+      return {
+        ...this.get(),
+        user_id: undefined,
+        article_id: undefined,
+      };
     }
   }
   Report.init(

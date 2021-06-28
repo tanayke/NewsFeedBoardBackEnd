@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 const express = require('express');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
-const { Article, Card, Location } = require('../models');
+const { Article, Card, Location, db } = require('../models');
 
 const router = express.Router();
 
@@ -91,6 +91,24 @@ router.post('/', upload, async (req, res) => {
   }
 });
 
+// @route PATCH api/article
+// @desc  update isActive
+// @access Public
+router.patch('/', async (req, res) => {
+  try {
+    const { isActive, articleId } = req.body;
+    console.log(isActive, articleId);
+    const article = await Article.findByPk(articleId);
+    article.isActive = isActive;
+    await article.save({ fields: ['isActive'] });
+    article.reload();
+    return res.status(200).json(article);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json(err);
+  }
+});
+
 // @route GET api/articles
 // @desc gets all articles in descending order of view counts
 // @access Public
@@ -103,6 +121,35 @@ router.get('/viewCount', async (req, res) => {
     return res.status(200).json(articles);
   } catch (err) {
     return res.status(400).json(err);
+  }
+});
+
+// @route GET api/articles
+// @desc  GET Article Detials based on articleId
+// @access Public
+router.get('/categories', async (req, res) => {
+  try {
+    // const categoriesViewCountArray = await Article.findAll({
+    //   attributes: [
+    //     'category_id',
+    //     [
+    //       db.sequelize.fn('sum', db.sequelize.col('viewCount')),
+    //       'categoryViewCount',
+    //     ],
+    //   ],
+    //   group: ['category_id'],
+    //   raw: true,
+    //   order: db.sequelize.literal('categoryViewCount DESC'),
+    // });
+    console.log(db);
+    const [categoriesViewCountArray, metadata] = await db.sequelize.query(
+      'SELECT category_id,sum(viewCount) from articles group by category_id;'
+    );
+    return categoriesViewCountArray.length
+      ? res.status(200).send(categoriesViewCountArray)
+      : res.status(204).send('no data found');
+  } catch (err) {
+    return res.status(204).send(err.message);
   }
 });
 
@@ -166,6 +213,9 @@ router.get('/', async (req, res) => {
 // utitliy methods
 const fetchAllArticles = (isTrending) =>
   Article.findAll({
+    where: {
+      isActive: [0, 1],
+    },
     order: isTrending
       ? [
           ['viewCount', 'DESC'],
@@ -190,6 +240,8 @@ const fetchArticlesBySearch = (search, isTrending) =>
           },
         },
       ],
+
+      isActive: [0, 1],
     },
     order: isTrending
       ? [
@@ -213,6 +265,9 @@ const fetchArticlesByLocationAndCategory = (
         {
           category_id: categoryId,
         },
+        {
+          isActive: [0, 1],
+        },
       ],
     },
     order: isTrending
@@ -227,6 +282,7 @@ const fetchArticlesByLocation = (locationId, isTrending) =>
   Article.findAll({
     where: {
       location_id: locationId,
+      isActive: [0, 1],
     },
     order: isTrending
       ? [
@@ -240,6 +296,7 @@ const fetchArticlesByCategory = (categoryId, isTrending) =>
   Article.findAll({
     where: {
       category_id: categoryId,
+      isActive: [0, 1],
     },
     order: isTrending
       ? [
