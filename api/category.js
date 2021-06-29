@@ -1,9 +1,34 @@
 const express = require('express');
-const { Category } = require('../models');
+const { Category, Article, sequelize } = require('../models');
 
-const auth = require('../middleware/auth');
+// const auth = require('../middleware/auth');
 
 const router = express.Router();
+
+// @route GET api/articles
+// @desc GETs total viewCounts by category
+// @access Public
+router.get('/views', async (req, res) => {
+  try {
+    const categoriesViewCountArray = await Article.findAll({
+      attributes: [
+        [
+          sequelize.fn('sum', sequelize.col('viewCount')),
+          'categoryTotalViewCount',
+        ],
+      ],
+      group: ['category_id'],
+      raw: true,
+      order: sequelize.literal('categoryTotalViewCount DESC'),
+      include: 'category',
+    });
+    return categoriesViewCountArray.length
+      ? res.status(200).send(categoriesViewCountArray)
+      : res.status(204).send('no data found');
+  } catch (err) {
+    return res.status(204).send(err.message);
+  }
+});
 
 // @route GET api/category
 // @desc  all categories for the home page filter

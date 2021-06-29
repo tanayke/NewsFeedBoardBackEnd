@@ -3,7 +3,7 @@ const express = require('express');
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
-const { Article, Card, Location, sequelize } = require('../models/index');
+const { Article, Card, Location } = require('../models/index');
 
 // utitliy methods
 const fetchAllArticles = (isTrending) =>
@@ -199,46 +199,6 @@ router.patch('/', async (req, res) => {
     return res.status(200).json(article);
   } catch (err) {
     return res.status(400).json(err);
-  }
-});
-
-// @route GET api/articles
-// @desc gets all articles in descending order of view counts
-// @access Public
-router.get('/viewCount', async (req, res) => {
-  try {
-    const articles = await Article.findAll({
-      include: ['location', 'reporter', 'category'],
-      order: [['viewCount', 'DESC']],
-    });
-    return res.status(200).json(articles);
-  } catch (err) {
-    return res.status(400).json(err);
-  }
-});
-
-// @route GET api/articles
-// @desc GETs total viewCounts by category
-// @access Public
-router.get('/categoryViews', async (req, res) => {
-  try {
-    const categoriesViewCountArray = await Article.findAll({
-      attributes: [
-        [
-          sequelize.fn('sum', sequelize.col('viewCount')),
-          'categoryTotalViewCount',
-        ],
-      ],
-      group: ['category_id'],
-      raw: true,
-      order: sequelize.literal('categoryTotalViewCount DESC'),
-      include: 'category',
-    });
-    return categoriesViewCountArray.length
-      ? res.status(200).send(categoriesViewCountArray)
-      : res.status(204).send('no data found');
-  } catch (err) {
-    return res.status(204).send(err.message);
   }
 });
 
