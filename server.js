@@ -23,6 +23,7 @@ app.use('/api/auth', require('./api/auth'));
 
 db.sequelize.sync({ alter: false }).then(() => {
   app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`listening on port ${PORT}`);
   });
 });

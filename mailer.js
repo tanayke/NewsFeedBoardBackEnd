@@ -23,8 +23,6 @@ const sendEmail = (emailId, subject, body, callback) => {
     html: body,
   };
 
-  console.log(options);
-
   transport.sendMail(options, callback);
 };
 

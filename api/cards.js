@@ -30,7 +30,6 @@ const upload = multer({
 router.get('/', (req, res) => res.send('cards Router'));
 
 router.post('/', upload, async (req, res) => {
-  console.log(req.body);
   const { type, content, cardOrder, articleId } = req.body;
   if (type === 'text') {
     const card = new Card({
@@ -63,7 +62,6 @@ router.get('/:id', async (req, res) => {
     });
     return res.json(cards);
   } catch (err) {
-    console.log(err);
     return res.status(400).json(err);
   }
 });

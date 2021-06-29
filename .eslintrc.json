@@ -10,7 +10,7 @@
     "node/no-unpublished-require": "off",
     "strict": "off",
     "prettier/prettier": "error",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "error",
     "no-console": "off",
     "func-names": "off",
     "no-process-exit": "off",
@@ -20,7 +20,6 @@
         "version": ">=8.0.0",
         "ignores": []
       }
-    ],
-    "no-use-before-define": ["warn", { "functions": true, "classes": true }]
+    ]
   }
 }

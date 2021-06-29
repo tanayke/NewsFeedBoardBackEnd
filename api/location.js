@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
 
     return res.json(locations);
   } catch (err) {
-    console.log(err);
     return res.status(400).json(err);
   }
 });
@@ -38,7 +37,6 @@ router.get('/', async (req, res) => {
 // @desc  create a location
 // @access Public
 router.post('/', async (req, res) => {
-  console.log(req.body);
   const { locality, city, state } = req.body;
 
   try {
@@ -49,7 +47,6 @@ router.post('/', async (req, res) => {
     });
     return res.status(201).json(location);
   } catch (err) {
-    console.log(err);
     return res.status(400).json(err);
   }
 });

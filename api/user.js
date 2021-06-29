@@ -22,7 +22,6 @@ router.get('/', async (req, res) => {
     });
     return res.status(200).json(users);
   } catch (err) {
-    console.log(err);
     return res.status(400).json(err);
   }
 });
@@ -33,14 +32,12 @@ router.get('/', async (req, res) => {
 router.patch('/', async (req, res) => {
   try {
     const { isApproved, userId } = req.body;
-    console.log(isApproved, userId);
     const user = await User.findByPk(userId);
     user.isApproved = isApproved;
     await user.save({ fields: ['isApproved'] });
     user.reload();
     return res.status(200).json(user);
   } catch (err) {
-    console.log(err);
     return res.status(400).json(err);
   }
 });
@@ -76,9 +73,6 @@ router.post(
       locality,
       isNewLocation,
     } = req.body;
-
-    console.log('locality', locality);
-    console.log(req.body);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -129,19 +123,14 @@ router.post(
             adminEmail,
             'New Request For Registration of Reporter',
             body1,
-            (error, info) => {
-              console.log(error);
-              console.log(info);
-            }
+            (error, info) => {}
           );
-        } catch (error) {
-          console.log(error);
-        }
+          // eslint-disable-next-line no-empty
+        } catch (error) {}
       }
 
       return res.status(200).json(user);
     } catch (err) {
-      console.error(err.message);
       return res.status(500).json(err);
     }
   }

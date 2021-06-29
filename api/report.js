@@ -1,6 +1,6 @@
 const express = require('express');
 const { Op } = require('sequelize');
-const { Report, Article, User } = require('../models');
+const { Report, Article } = require('../models');
 
 const router = express.Router();
 
@@ -70,7 +70,6 @@ router.post('/', async (req, res) => {
     await newReport.save();
     return res.status(201).json(newReport);
   } catch (err) {
-    console.log(err);
     return res.status(400).json(err);
   }
 });

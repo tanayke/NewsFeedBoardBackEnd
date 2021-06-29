@@ -1,6 +1,5 @@
-const createResult = (error, data) => {
-  return error ? createError(error) : createSuccess(data);
-};
+const createResult = (error, data) =>
+  error ? createError(error) : createSuccess(data);
 
 const createSuccess = (data) => {
   const result = {};

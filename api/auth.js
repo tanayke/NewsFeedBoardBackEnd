@@ -16,12 +16,10 @@ const { User } = require('../models');
 
 router.get('/', auth, async (req, res) => {
   try {
-    console.log('request ----', req.user);
     //  const user = await User.findOne({ where: { id: req.user.id } });
     const user = await User.findByPk(req.user.id);
     res.json(user);
   } catch (error) {
-    console.error(error.message);
     res.status(400).send('Server Error');
   }
 });
@@ -37,7 +35,7 @@ router.post(
   ],
   // eslint-disable-next-line consistent-return
   async (req, res) => {
-    const { email, password } = req.body;
+    const { password } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -73,7 +71,6 @@ router.post(
         return res.json({ token });
       });
     } catch (err) {
-      console.error(err.message);
       return res.status(500).json(err);
     }
   }
