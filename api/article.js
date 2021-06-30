@@ -4,25 +4,14 @@ const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
 const { Article, Card, Location } = require('../models/index');
+const { getPagination, getPaginationData } = require('../utils/pagination');
 
 // utitliy methods
-const fetchAllArticles = (isTrending) =>
-  Article.findAll({
-    where: {
-      isActive: [0, 1],
-    },
-    order: isTrending
-      ? [
-          ['viewCount', 'DESC'],
-          ['uploadDateTime', 'DESC'],
-        ]
-      : [['uploadDateTime', 'DESC']],
-    include: ['location', 'reporter', 'category'],
-  });
 
-const fetchArticlesBySearch = (search, isTrending) =>
-  Article.findAll({
-    where: {
+const getWhereClause = (search, locationId, categoryId) => {
+  let whereClause = {};
+  if (search)
+    whereClause = {
       [Op.or]: [
         {
           title: {
@@ -35,24 +24,9 @@ const fetchArticlesBySearch = (search, isTrending) =>
           },
         },
       ],
-
-      isActive: [0, 1],
-    },
-    order: isTrending
-      ? [
-          ['viewCount', 'DESC'],
-          ['uploadDateTime', 'DESC'],
-        ]
-      : [['uploadDateTime', 'DESC']],
-    include: ['location', 'reporter', 'category'],
-  });
-const fetchArticlesByLocationAndCategory = (
-  locationId,
-  categoryId,
-  isTrending
-) =>
-  Article.findAll({
-    where: {
+    };
+  else if (locationId && categoryId)
+    whereClause = {
       [Op.and]: [
         {
           location_id: locationId,
@@ -60,49 +34,18 @@ const fetchArticlesByLocationAndCategory = (
         {
           category_id: categoryId,
         },
-        {
-          isActive: [0, 1],
-        },
       ],
-    },
-    order: isTrending
-      ? [
-          ['viewCount', 'DESC'],
-          ['uploadDateTime', 'DESC'],
-        ]
-      : [['uploadDateTime', 'DESC']],
-    include: ['location', 'reporter', 'category'],
-  });
-const fetchArticlesByLocation = (locationId, isTrending) =>
-  Article.findAll({
-    where: {
+    };
+  else if (locationId)
+    whereClause = {
       location_id: locationId,
-      isActive: [0, 1],
-    },
-    order: isTrending
-      ? [
-          ['viewCount', 'DESC'],
-          ['uploadDateTime', 'DESC'],
-        ]
-      : [['uploadDateTime', 'DESC']],
-    include: ['location', 'reporter', 'category'],
-  });
-const fetchArticlesByCategory = (categoryId, isTrending) =>
-  Article.findAll({
-    where: {
+    };
+  else if (categoryId)
+    whereClause = {
       category_id: categoryId,
-      isActive: [0, 1],
-    },
-    order: isTrending
-      ? [
-          ['viewCount', 'DESC'],
-          ['uploadDateTime', 'DESC'],
-        ]
-      : [['uploadDateTime', 'DESC']],
-    include: ['location', 'reporter', 'category'],
-  });
-
-const router = express.Router();
+    };
+  return whereClause;
+};
 
 const createCards = (cards, articleId, files) => {
   const cardsArray = JSON.parse(cards);
@@ -121,6 +64,36 @@ const createCards = (cards, articleId, files) => {
 
   return cardsArrayUpdated;
 };
+const router = express.Router();
+
+// @route GET api/articles
+// @desc  gets ALL articles based on filter applied(category,location,search,trending via title) and ALL if no filter is applied
+// @access Public
+router.get('/', async (req, res) => {
+  const { locationId, categoryId, search, isTrending, page, size } = req.query;
+  let articles;
+  const { limit, offset } = getPagination(page, size);
+  try {
+    articles = await Article.findAndCountAll({
+      where: {
+        ...getWhereClause(search, locationId, categoryId),
+        isActive: [0, 1],
+      },
+      limit,
+      offset,
+      order: isTrending
+        ? [
+            ['viewCount', 'DESC'],
+            ['uploadDateTime', 'DESC'],
+          ]
+        : [['uploadDateTime', 'DESC']],
+      include: ['location', 'reporter', 'category'],
+    });
+    return res.status(200).send(getPaginationData(articles, page, limit));
+  } catch (error) {
+    return res.status(500).res.send(error.response);
+  }
+});
 
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -229,31 +202,6 @@ router.patch('/viewCount/:articleId', async (req, res) => {
     return res.status(200).json(updatedViewCount);
   } catch (err) {
     return res.status(304).send(err);
-  }
-});
-
-// @route GET api/articles
-// @desc  gets ALL articles based on filter applied(category,location,search,trending via title) and ALL if no filter is applied
-// @access Public
-router.get('/', async (req, res) => {
-  const { locationId, categoryId, search, isTrending } = req.query;
-  let articles;
-  try {
-    if (search) articles = await fetchArticlesBySearch(search, isTrending);
-    else if (locationId && categoryId)
-      articles = await fetchArticlesByLocationAndCategory(
-        locationId,
-        categoryId,
-        isTrending
-      );
-    else if (locationId)
-      articles = await fetchArticlesByLocation(locationId, isTrending);
-    else if (categoryId)
-      articles = await fetchArticlesByCategory(categoryId, isTrending);
-    else articles = await fetchAllArticles(isTrending);
-    return res.json(articles);
-  } catch (err) {
-    return res.status(400).json(err);
   }
 });
 
