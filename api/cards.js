@@ -51,6 +51,7 @@ router.post('/', upload, async (req, res) => {
   }
   return res.json({ message: 'article added successfully' });
 });
+
 // @route GET api/cards
 // @desc  test route
 // @access Public
