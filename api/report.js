@@ -1,6 +1,7 @@
 const express = require('express');
 const { Op } = require('sequelize');
 const { Report, Article } = require('../models');
+const { getPagination, getPaginationData } = require('../utils/pagination');
 
 const router = express.Router();
 
@@ -10,8 +11,11 @@ const router = express.Router();
 // @access Public
 
 router.get('/unresolved', async (req, res) => {
+  const { page, size } = req.query;
+  const { limit, offset } = getPagination(page, size);
+  console.log('limit and offset', limit, offset);
   try {
-    const reports = await Report.findAll({
+    const reports = await Report.findAndCountAll({
       include: [
         {
           model: Article,
@@ -24,9 +28,13 @@ router.get('/unresolved', async (req, res) => {
         },
         'user',
       ],
+      limit,
+      offset,
     });
-    return reports.length
-      ? res.status(200).send(reports)
+    console.log('reports', reports);
+    console.log('getpaginationData', getPaginationData(reports, page, limit));
+    return reports.rows
+      ? res.status(200).send(getPaginationData(reports, page, limit))
       : res.status(204).send('no reports foudn');
   } catch (err) {
     return res.status(204).send(err.message);
