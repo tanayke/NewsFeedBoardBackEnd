@@ -1,8 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const express = require('express');
 const { Op } = require('sequelize');
-const multer = require('multer');
-const path = require('path');
+const { upload } = require('../middleware/storageMulter');
 const { Article, Card, Location } = require('../models/index');
 const { getPagination, getPaginationData } = require('../utils/pagination');
 
@@ -94,27 +93,6 @@ router.get('/', async (req, res) => {
     return res.status(500).res.send(error.response);
   }
 });
-
-const Storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(
-      null,
-      file.fieldname === 'thumbnailImage'
-        ? './public/thumbnail'
-        : './public/cards'
-    );
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-
-const upload = multer({
-  storage: Storage,
-}).any();
 
 router.post('/', upload, async (req, res) => {
   const {
