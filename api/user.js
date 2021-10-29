@@ -82,7 +82,9 @@ router.post(
     try {
       let user = await User.findOne({ where: { email: req.body.email } });
       if (user) {
-        return res.status(400).json({ msg: 'User already exists!' });
+        return res
+          .status(409)
+          .json({ msg: 'User already exists!', status: 409 });
       }
 
       const location =

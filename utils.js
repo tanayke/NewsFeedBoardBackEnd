@@ -1,6 +1,3 @@
-const createResult = (error, data) =>
-  error ? createError(error) : createSuccess(data);
-
 const createSuccess = (data) => {
   const result = {};
   result.status = 'success';
@@ -14,6 +11,8 @@ const createError = (error) => {
   result.error = error;
   return result;
 };
+const createResult = (error, data) =>
+  error ? createError(error) : createSuccess(data);
 
 module.exports = {
   createResult,
